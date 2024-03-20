@@ -1,0 +1,146 @@
+﻿@page "/diary"
+@using Microsoft.AspNetCore.Components.Forms
+
+
+<PageTitle>Food Diary</PageTitle>
+
+<h3>Food Diary</h3>
+
+<EditForm Model="foodEntry" OnValidSubmit="HandleValidSubmit">
+    <div class="form-group">
+        <label for="foodName">Food Name/Type</label>
+        <InputText id="foodName" @bind-Value="foodEntry.FoodName" class="input-field" />
+    </div>
+    <div class="form-group">
+        <label for="servings">Servings</label>
+        <InputNumber id="servings" @bind-Value="foodEntry.Servings" class="input-field" />
+        <label for="servingSizeUnit">Unit</label>
+        <InputSelect id="servingSizeUnit" @bind-Value="foodEntry.ServingSizeUnit" class="input-field">
+            <option value="grams">Grams</option>
+            <option value="cups">Cups</option>
+            <option value="pieces">Pieces</option>
+            <!-- Add other units of measurement here as needed -->
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="calories">Calories</label>
+        <InputNumber id="calories" @bind-Value="foodEntry.Calories" class="input-field" />
+    </div>
+    <div class="form-group">
+        <label for="proteins">Proteins (g)</label>
+        <InputNumber id="proteins" @bind-Value="foodEntry.Proteins" class="input-field" />
+    </div>
+    <div class="form-group">
+        <label for="carbohydrates">Carbohydrates (g)</label>
+        <InputNumber id="carbohydrates" @bind-Value="foodEntry.Carbohydrates" class="input-field" />
+    </div>
+    <div class="form-group">
+        <label for="fats">Fats (g)</label>
+        <InputNumber id="fats" @bind-Value="foodEntry.Fats" class="input-field" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Log Food</button>
+</EditForm>
+@if (foodEntries.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Food Name/Type</th>
+                <th>Servings</th>
+                <th>Calories</th>
+                <th>Proteins (g)</th>
+                <th>Carbohydrates (g)</th>
+                <th>Fats (g)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in foodEntries)
+            {
+                <tr>
+                    <td>@entry.FoodName</td>
+                    <td>@entry.Servings</td>
+                    <td>@entry.Calories</td>
+                    <td>@entry.Proteins</td>
+                    <td>@entry.Carbohydrates</td>
+                    <td>@entry.Fats</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="nutrition-totals">
+        <h3>Daily Totals</h3>
+        <p>Calories: @dailyTotals.Calories</p>
+        <p>Proteins: @dailyTotals.Proteins g</p>
+        <p>Carbohydrates: @dailyTotals.Carbohydrates g</p>
+        <p>Fats: @dailyTotals.Fats g</p>
+    </div>
+}
+
+@code {
+    private FoodEntry foodEntry = new FoodEntry();
+    private List<FoodEntry> foodEntries = new List<FoodEntry>();
+    private NutritionTotals dailyTotals = new NutritionTotals();
+    private string foodSearchQuery;
+   
+
+    private void HandleValidSubmit()
+    {
+        ConvertServingsToStandardUnit(foodEntry);
+
+        // Add the entry to the list and recalculate totals
+        foodEntries.Add(foodEntry);
+        CalculateDailyTotals();
+
+        // Reset the form for a new entry
+        foodEntry = new FoodEntry();
+    }
+
+    private void ConvertServingsToStandardUnit(FoodEntry entry)
+    {
+        switch (entry.ServingSizeUnit)
+        {
+            case "grams":
+                // Assume entry is already in grams; no conversion needed
+                break;
+            case "cups":
+                // Convert cups to grams, for example
+                entry.Servings *= 240; // if 1 cup is approximately 240 grams
+                break;
+            case "pieces":
+                // Convert pieces to grams, for example
+                entry.Servings *= 50; // if 1 piece is approximately 50 grams
+                break;
+                // Add other conversions as necessary
+        }
+    }
+
+    private void CalculateDailyTotals()
+    {
+        dailyTotals.Calories = foodEntries.Sum(fe => fe.Calories);
+        dailyTotals.Proteins = foodEntries.Sum(fe => fe.Proteins);
+        dailyTotals.Carbohydrates = foodEntries.Sum(fe => fe.Carbohydrates);
+        dailyTotals.Fats = foodEntries.Sum(fe => fe.Fats);
+    }
+
+    public class FoodEntry
+    {
+        public string FoodName { get; set; }
+        public double Servings { get; set; }
+        public double Calories { get; set; }
+        public double Proteins { get; set; }
+        public double Carbohydrates { get; set; }
+        public double Fats { get; set; }
+        public string ServingSizeUnit { get; set; }
+    }
+
+    public class NutritionTotals
+    {
+        public double Calories { get; set; }
+        public double Proteins { get; set; }
+        public double Carbohydrates { get; set; }
+        public double Fats { get; set; }
+    }
+}
+

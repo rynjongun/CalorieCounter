@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalorieCounter", "CalorieCounter\CalorieCounter.csproj", "{B1456DE2-E2BB-4E01-B3F1-CBDB1C3ACB30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalorieCounter", "CalorieCounter\CalorieCounter.csproj", "{A45841A8-3130-4BC1-9621-88E6F4EE0B5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B1456DE2-E2BB-4E01-B3F1-CBDB1C3ACB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1456DE2-E2BB-4E01-B3F1-CBDB1C3ACB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1456DE2-E2BB-4E01-B3F1-CBDB1C3ACB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1456DE2-E2BB-4E01-B3F1-CBDB1C3ACB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A45841A8-3130-4BC1-9621-88E6F4EE0B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A45841A8-3130-4BC1-9621-88E6F4EE0B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A45841A8-3130-4BC1-9621-88E6F4EE0B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A45841A8-3130-4BC1-9621-88E6F4EE0B5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EADB01E8-E3AE-4FCB-9830-93BA3151E6C8}
+		SolutionGuid = {6587F10F-7C28-4D16-A47F-D219AF8CFBD2}
 	EndGlobalSection
 EndGlobal

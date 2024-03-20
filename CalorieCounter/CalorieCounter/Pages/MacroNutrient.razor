@@ -1,0 +1,148 @@
+﻿@page "/macronutrient"
+@namespace CalorieCounter.Pages
+<h3>Macronutrient Calculator</h3>
+
+<EditForm Model="@userInfo" OnValidSubmit="CalculateCalories">
+    <div class="form-group">
+        <label for="sex">Sex</label>
+        <InputSelect id="sex" @bind-Value="userInfo.Sex" class="input-field">
+            <option value="">Select...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </InputSelect>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(userInfo.Sex))
+    {
+        <div class="form-group">
+            <label for="age">Age</label>
+            <InputNumber id="age" @bind-Value="userInfo.Age" class="input-field" />
+        </div>
+
+        <div class="form-group">
+            <label for="height">Height (inches)</label>
+            <InputNumber id="height" @bind-Value="userInfo.Height" class="input-field" />
+        </div>
+
+        <div class="form-group">
+            <label for="currentWeight">Current Weight (lbs)</label>
+            <InputNumber id="currentWeight" @bind-Value="userInfo.CurrentWeight" class="input-field" />
+        </div>
+
+        <div class="form-group">
+            <label for="goalWeight">Goal Weight (lbs)</label>
+            <InputNumber id="goalWeight" @bind-Value="userInfo.GoalWeight" class="input-field" />
+        </div>
+
+        <div class="form-group">
+            <label for="bodyFat">Body Fat (%)</label>
+            <InputNumber id="bodyFat" @bind-Value="userInfo.BodyFatPercentage" class="input-field" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    }
+</EditForm>
+
+@if (showResults)
+{
+    <div class="results">
+        <!-- Display Maintenance Calories and Macronutrients -->
+        <div>
+            <span>Maintenance Calories:</span>
+            <span>@userInfo.MaintenanceCalories cal/day</span>
+            <div>
+                Carbs: @userInfo.MaintenanceCarbs g
+                Protein: @userInfo.MaintenanceProtein g
+                Fats: @userInfo.MaintenanceFats g
+            </div>
+        </div>
+        <!-- Display Deficit Calories and Macronutrients -->
+        <div>
+            <span>Deficit Calories (Weight loss):</span>
+            <span>@userInfo.DeficitCalories cal/day</span>
+            <div>
+                Carbs: @userInfo.DeficitCarbs g
+                Protein: @userInfo.DeficitProtein g
+                Fats: @userInfo.DeficitFats g
+            </div>
+        </div>
+        <!-- Display Surplus Calories and Macronutrients -->
+        <div>
+            <span>Surplus Calories (Weight gain):</span>
+            <span>@userInfo.SurplusCalories cal/day</span>
+            <div>
+                Carbs: @userInfo.SurplusCarbs g
+                Protein: @userInfo.SurplusProtein g
+                Fats: @userInfo.SurplusFats g
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private UserInfo userInfo = new UserInfo();
+    private bool showResults = false;
+
+    public class UserInfo
+    {
+        public string Sex { get; set; }
+        public double Age { get; set; }
+        public double Height { get; set; }
+        public double CurrentWeight { get; set; }
+        public double GoalWeight { get; set; }
+        public double BodyFatPercentage { get; set; }
+        // Properties for maintenance, deficit, and surplus calories
+        public double MaintenanceCalories { get; set; }
+        public double DeficitCalories { get; set; }
+        public double SurplusCalories { get; set; }
+
+        // Macronutrients for maintenance
+        public double MaintenanceCarbs { get; set; }
+        public double MaintenanceProtein { get; set; }
+        public double MaintenanceFats { get; set; }
+
+        // Macronutrients for deficit
+        public double DeficitCarbs { get; set; }
+        public double DeficitProtein { get; set; }
+        public double DeficitFats { get; set; }
+
+        // Macronutrients for surplus
+        public double SurplusCarbs { get; set; }
+        public double SurplusProtein { get; set; }
+        public double SurplusFats { get; set; }
+    }
+
+    private void CalculateCalories()
+    {
+        // Calculate BMR using the Harris-Benedict equation
+        double BMR = (userInfo.Sex == "Male")
+            ? 88.362 + (13.397 * userInfo.CurrentWeight) + (4.799 * userInfo.Height) - (5.677 * userInfo.Age)
+            : 447.593 + (9.247 * userInfo.CurrentWeight) + (3.098 * userInfo.Height) - (4.330 * userInfo.Age);
+
+        // Convert from kcal to cal right after BMR calculation
+        var dailyCalories = BMR * 1.2;
+
+        // Calculate maintenance calories and convert from kcal to cal
+        userInfo.MaintenanceCalories = dailyCalories * 1000; // kcal to cal
+        userInfo.DeficitCalories = (dailyCalories - 500) * 1000; // Subtract 500 for a deficit
+        userInfo.SurplusCalories = (dailyCalories + 500) * 1000; // Add 500 for a surplus
+
+        // Calculate macronutrients for each scenario
+        CalculateMacronutrients(userInfo.MaintenanceCalories, out userInfo.MaintenanceCarbs, out userInfo.MaintenanceProtein, out userInfo.MaintenanceFats);
+        CalculateMacronutrients(userInfo.DeficitCalories, out userInfo.DeficitCarbs, out userInfo.DeficitProtein, out userInfo.DeficitFats);
+        CalculateMacronutrients(userInfo.SurplusCalories, out userInfo.SurplusCarbs, out userInfo.SurplusProtein, out userInfo.SurplusFats);
+
+        showResults = true; // Show the results after calculation
+    }
+
+
+    private void CalculateMacronutrients(double totalCalories, out double carbs, out double protein, out double fats)
+    {
+        // Assume distribution: 50% carbs, 30% protein, 20% fats
+        carbs = (totalCalories * 0.5) / 4; // Carbs are 4 cal/g
+        protein = (totalCalories * 0.3) / 4; // Protein is 4 cal/g
+        fats = (totalCalories * 0.2) / 9; // Fats are 9 cal/g
+    }
+
+
+}
